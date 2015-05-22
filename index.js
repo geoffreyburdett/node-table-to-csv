@@ -1,27 +1,26 @@
-var cheerio = require('cheerio'),
-    fs = require('fs');
+var cheerio = require('cheerio');
+var fs 	 	= require('fs');
 
-var convert = function(filePath, filePathNew) {
+module.exports = function(table, options) {
 
-    var $ = cheerio.load(fs.readFileSync(filePath));
+    var table = cheerio.load(table);
 
-    var createMatrix = function($) {
+    var createMatrix = function(table) {
         var matrix = [],
             i = 0;
 
-        $("table tr").each(function() {
-            console.log('- found tr #' + i);
+        table("table tr").each(function() {
             var j = 0;
             matrix[i] = [];
 
-            $(this).find('th').each(function() {
-                matrix[i][j] = $(this).text().trim().replace(/(\r\n|\n|\r)/gm, "");
+            table(this).find('th').each(function() {
+                matrix[i][j] = table(this).text().trim().replace(/(\r\n|\n|\r)/gm, "");
                 j++;
                 return matrix;
             });
 
-            $(this).find('td').each(function() {
-                matrix[i][j] = '"' + $(this).text().trim() + '"';
+            table(this).find('td').each(function() {
+                matrix[i][j] = '"' + table(this).text().trim() + '"';
                 j++;
                 return matrix;
             });
@@ -39,14 +38,7 @@ var convert = function(filePath, filePathNew) {
         }
         return csv;
     }
-
-    fs.writeFile(filePathNew, createCsv(createMatrix($)), function(err) {
-        if (err) {
-            return console.log(err);
-        }
-        console.log('- csv saved to ' + filePathNew);
-    });
+    
+    return createCsv(createMatrix(table));
 
 }
-
-convert(process.argv[2], process.argv[3]);
