@@ -20,5 +20,5 @@ htmlTable =
 
 csv = tableToCsv(htmlTable);
 
-console.log(csv);let's do 
+console.log(csv);
 ```
