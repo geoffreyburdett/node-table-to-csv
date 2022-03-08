@@ -1,7 +1,9 @@
 var cheerio = require('cheerio');
 var fs 	 	= require('fs');
 
-module.exports = function(table, options) {
+const DEFAULT_OPTIONS = { splitter: ',' }
+
+module.exports = function(table, options = DEFAULT_OPTIONS) {
 
     var table = cheerio.load(table);
 
@@ -34,11 +36,10 @@ module.exports = function(table, options) {
     function createCsv(data) {
         var csv = '';
         for (var i = 0; i < data.length; i++) {
-            csv += data[i].join(',') + "\n";
+            csv += data[i].join(String(options.splitter)) + "\n";
         }
         return csv;
     }
     
     return createCsv(createMatrix(table));
-
 }
